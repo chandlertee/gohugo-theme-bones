@@ -1,7 +1,27 @@
 {{ define "main" }}
   {{ .Content }}
-  {{ range site.RegularPages }}
-    <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
-    {{ .Summary }}
+  {{ $pages := where .Site.RegularPages "Section" "posts" }}
+  {{ $pages = $pages.ByDate.Reverse }}
+  {{ range (.Paginate $pages 2).Pages }}
+    <article>
+      <header>
+        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      </header>
+      <div class="summary">
+        {{ .Summary }}
+        {{ if .Truncated }}
+          <a href="{{ .RelPermalink }}">More ...</a>
+        {{ end }}
+      </div>
+      <footer>
+        {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+        {{ $dateHuman := .Date | time.Format ":date_long" }}
+        <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+        {{ partial "terms.html" (dict "taxonomy" "categories" "page" .) }}
+      </footer>
+    </article>
   {{ end }}
+  {{ template "_internal/pagination.html" . }}
 {{ end }}
+
+
