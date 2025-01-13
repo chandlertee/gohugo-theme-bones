@@ -1,10 +1,32 @@
 {{ define "main" }}
-  <h1>{{ .Title }}</h1>
+  <article>
+    <header>
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p>{{ . }}</p>{{ end }}
+      {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+      {{ $dateHuman := .Date | time.Format ":date_long" }}
+      Posted <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+    </header>
+    {{ .Content }}
+    <footer>
+      {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+    </footer>
+  </article>
 
-  {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
-  {{ $dateHuman := .Date | time.Format ":date_long" }}
-  <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+  {{ $pages := .CurrentSection.Pages.ByWeight }}
+  {{ with $pages.Prev . }}
+    <a href="{{ .RelPermalink }}">Previous</a>
+  {{ end }}
+  {{ with $pages.Next . }}
+    <a href="{{ .RelPermalink }}">Next</a>
+  {{ end }}
 
-  {{ .Content }}
-  {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+  {{ with .Site.RegularPages.Related . | first 5 }}
+    <p>Related pages:</p>
+    <ul>
+      {{ range . }}
+        <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+      {{ end }}
+    </ul>
+  {{ end }}
 {{ end }}
