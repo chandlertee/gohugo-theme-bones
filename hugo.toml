@@ -2,6 +2,9 @@ baseURL = 'https://example.org/'
 languageCode = 'en-US'
 title = 'My New Hugo Site'
 
+[params]
+author = 'Site Author'
+
 [[menus.main]]
 name = 'Home'
 pageRef = '/'
@@ -21,3 +24,9 @@ weight = 30
   [module.hugoVersion]
     extended = false
     min = "0.116.0"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.parser]
+      [markup.goldmark.parser.attribute]
+        block = true
